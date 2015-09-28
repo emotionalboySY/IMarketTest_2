@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="512px"
+        android:layout_height="512px"
+        android:src="@drawable/splash_icon"
+        android:layout_marginTop="71dp"
+        android:id="@+id/login_image"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_id"
+        android:hint="아이디"
+        android:layout_marginTop="68dp"
+        android:layout_below="@+id/login_image"
+        android:layout_alignRight="@id/login_image"
+        android:layout_alignEnd="@id/login_image"
+        android:layout_alignLeft="@id/login_image"
+        android:layout_alignStart="@id/login_image" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/login_pw"
+        android:hint="비밀번호"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/login_id"
+        android:layout_alignLeft="@id/login_id"
+        android:layout_alignStart="@id/login_id"
+        android:layout_alignRight="@id/login_id"
+        android:layout_alignEnd="@id/login_id" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="로그인"
+        android:id="@+id/login_loginbutton"
+        android:layout_below="@+id/login_pw"
+        android:layout_marginTop="20dp"
+        android:layout_alignRight="@+id/login_pw"
+        android:onClick="onClick_Login" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        android:id="@+id/login_signupbutton"
+        android:layout_below="@id/login_pw"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@+id/login_loginbutton"
+        android:onClick="onClick_SignUp" />
+
+</RelativeLayout>

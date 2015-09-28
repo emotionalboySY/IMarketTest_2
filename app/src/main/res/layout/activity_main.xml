@@ -5,44 +5,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- The first child in the layout is for the main Activity UI-->
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/drawer_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context=".MainActivity"
-        android:background="#ffffffff">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Holy Operating Systems, Batdroid!"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/batdroid"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
-
-    </RelativeLayout>
+            android:layout_height="match_parent" />
 
     <!-- Side navigation drawer UI -->
-    <ListView
-        android:id="@+id/navList"
+    <LinearLayout
+        android:id="@+id/drawer_main"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:layout_gravity="left|start"
-        android:background="#cccc" />
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:background="#cccc" >
+
+        <RelativeLayout
+            android:id="@+id/drawer_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_default_profile_art" >
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:id="@+id/drawer_image_profile"
+                android:src="@drawable/drawer_profile"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/drawer_id"
+                android:text="id"
+                android:textSize="14sp"
+                android:layout_toRightOf="@id/drawer_image_profile"
+                android:layout_alignTop="@id/drawer_image_profile"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/drawer_pw"
+                android:text="pw"
+                android:textSize="14sp"
+                android:layout_below="@id/drawer_id"
+                android:layout_toRightOf="@id/drawer_image_profile"
+                android:layout_marginLeft="10dp" />
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/navList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|start"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:background="#ffeeeeee"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:choiceMode="singleChoice" />
+
+    </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

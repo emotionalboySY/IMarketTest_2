@@ -1,19 +1,28 @@
 package com.serahaeyum.imarkettest2;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -23,81 +32,67 @@ public class MainActivity extends ActionBarActivity {
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
-    private View mContainerView;
-    private int mCurrentSelectedPosition = 0;
-    private NavigationDrawerCallbacks mCallback;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+    private String[] mListItems;
+        private LinearLayout Drawer_main;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xff359AC4));
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
-        mDrawerList = (ListView)findViewById(R.id.navList);
+            TextView textView_id = (TextView) findViewById(R.id.drawer_id);
+            TextView textView_pw = (TextView) findViewById(R.id.drawer_pw);
+
+        Intent login = getIntent();
+
+        String id = login.getStringExtra("id");
+        String pw = login.getStringExtra("pw");
+
+        textView_id.setText(String.valueOf(id));
+        textView_pw.setText(String.valueOf(pw));
+
+        mTitle = mDrawerTitle = getTitle();
+        mListItems = getResources().getStringArray(R.array.navigation_items);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        Drawer_main = (LinearLayout) findViewById(R.id.drawer_main);
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
         mActivityTitle = getTitle().toString();
 
-        addDrawerItems();
-        setupDrawer();
+        mAdapter = new ArrayAdapter<String>(this, R.layout.drawer_item_style, mListItems);
+        mDrawerList.setAdapter(mAdapter);
+
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-    }
 
-    private void addDrawerItems() {
-        mAdapter =
-                new ArrayAdapter<String> (
-                        this,
-                        R.layout.simple_list_item_activated_1,
-                        android.R.id.text1,
-                        new String[] {
-                                getString(R.string.menu_title_1),
-                                getString(R.string.menu_title_2),
-                                getString(R.string.menu_title_3),
-                                getString(R.string.menu_title_4),
-                        });
-        mDrawerList.setAdapter(mAdapter);
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
-            }
-        });
-    }
-
-    private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
+                mDrawerLayout.openDrawer(Drawer_main);
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation!");
+                getSupportActionBar().setTitle(R.string.navigation_name);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mActivityTitle);
+                getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-    }
 
-    private void selectItem(int position) {
-        mCurrentSelectedPosition = position;
-        if (mDrawerList != null) {
-            mDrawerList.setItemChecked(position, true);
-        }
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mContainerView);
-        }
-        if (mCallback != null) {
-            mCallback.onNavigationDrawerItemSelected(position);
+        if (savedInstanceState == null) {
+            selectItem(0);
         }
     }
 
@@ -141,26 +136,57 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(Activity activity);
-        try {
-            mCallback = (NavigationDrawerCallbacks) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallback = null;
+    private void selectItem(int position) {
+
+        // update the main content by replacing fragments
+        Fragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putInt(DetailFragment.LIST_NUMBER, position);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.drawer_detail, fragment).commit();
+
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mListItems[position]);
+        mDrawerLayout.closeDrawer(Drawer_main);
+
     }
 
-    public static interface NavigationDrawerCallbacks {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
-        void onNavigationDrawerItemSelected(int position);
+    public static class DetailFragment extends Fragment {
+        public static final String LIST_NUMBER = "list_number";
+
+        public DetailFragment() {
+
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            int i = getArguments().getInt(LIST_NUMBER);
+            int ViewId = 0;
+            switch (i) {
+                case 0:
+                    ViewId = R.layout.drawer_detail_1;
+                    break;
+                case 1:
+                    ViewId = R.layout.drawer_detail_2;
+                    break;
+                case 2:
+                    ViewId = R.layout.drawer_detail_3;
+                    break;
+                case 3:
+                    ViewId = R.layout.drawer_detail_4;
+            }
+            View rootView = inflater.inflate(ViewId, container, false);
+            return rootView;
+        }
     }
 }
